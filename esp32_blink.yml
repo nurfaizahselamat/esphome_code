@@ -1,0 +1,20 @@
+esphome:
+    platform: ESP32
+    board: esp32dev
+    name: esp32-blink   #coding dashboardname  
+    
+logger:
+
+output:
+    - platform: gpio
+      pin: 4
+      id: blueLED     #output name
+      
+interval:
+    - interval: 1s
+      then:
+        - output.turn_on: blueLED  
+    - interval: 3s
+      then:
+        - output.turn_off: blueLED
+    
