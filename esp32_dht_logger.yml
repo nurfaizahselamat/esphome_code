@@ -1,0 +1,21 @@
+esphome:
+    platform: ESP32
+    board: esp32dev
+    name: esp32-dht
+    
+logger:
+    level: DEBUG
+    
+sensor:
+    - platform: dht
+      pin: 25        
+      
+      temperature:
+        name: "Room Temperature "
+        id: temp
+      humidity:
+        name: "Room Humidity"
+        id: humi
+      update_interval: 5s
+      model: DHT22
+    
