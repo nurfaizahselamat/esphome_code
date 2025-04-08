@@ -1,0 +1,21 @@
+esphome:
+    platform: ESP32
+    board: esp32dev
+    name: esp32-lcd
+    
+logger:
+    level: NONE 
+
+# Set pin I2C LCD 
+i2c: 
+    sda: 21
+    scl: 22
+
+# Configuration column & row      
+display:
+    - platform: lcd_pcf8574
+      dimensions: 16x2
+      address: 0x27
+      lambda: |-
+        it.print(4,0, "Selamat");
+        it.print(3,1, "Hari Raya!");
