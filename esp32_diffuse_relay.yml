@@ -1,0 +1,30 @@
+#setup platform & board
+esphome:
+    platform: ESP32
+    board: esp32dev
+    name: esp32-diffuse-relay
+
+logger:
+
+#setup output for relay
+switch:
+    - platform: gpio
+      pin: 16
+      inverted: true
+      id: relay1
+      
+#setup input for diffuse sensor
+binary_sensor:
+    - platform: gpio
+      pin:
+        number: 13
+        inverted: true
+      id: diffuseSensor
+      on_press:
+        then:
+            - switch.turn_on: relay1
+      on_release:
+        then:
+            - switch.turn_off: relay1
+
+    
