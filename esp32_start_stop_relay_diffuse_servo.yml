@@ -1,0 +1,69 @@
+esphome:
+    platform: ESP32
+    board: esp32dev
+    name: esp32-mini-project
+    
+logger:
+
+# Control green & red pilot light
+switch:
+    - platform: gpio
+      pin: 16
+      inverted: true
+      id: relay1
+
+# Control DC motor for conveyor
+    - platform: gpio
+      pin: 17
+      inverted: true
+      id: relay2
+      
+# Servo configuration. ESP32, platform use ledc output
+servo:
+    - id: my_servo
+      output: pwm_output
+      
+output:
+    - platform: ledc
+      id: pwm_output
+      pin: 5
+      frequency: 50 Hz
+      
+# Input control light, DC motor 
+binary_sensor:
+    - platform: gpio
+      pin:
+        number: 25
+        mode: input_pullup
+        inverted: true
+      id: start
+      on_press:
+        then:
+            - switch.turn_on: relay1
+            - switch.turn_on: relay2
+            
+    - platform: gpio
+      pin:
+        number: 26
+        mode: input_pullup
+        inverted: true
+      id: stop
+      on_press:
+        then:
+            - switch.turn_off: relay1
+            - switch.turn_off: relay2
+            
+# Diffuse sensor & servo for sorting
+    - platform:  gpio
+      pin: 13
+      id: diffuseSensor1
+      on_press:
+        then:
+            lambda: !lambda |-
+                id(my_servo).write(0);
+      on_release:
+        then:
+            lambda: !lambda |-
+                id(my_servo).write(-1);
+
+
