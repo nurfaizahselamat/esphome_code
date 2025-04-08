@@ -1,0 +1,38 @@
+#Project & board information
+esphome:
+    platform: ESP32
+    board: esp32dev
+    name: esp32-startstop-led
+
+#Start logger just like serial monitor   
+logger:
+
+#set gpio as output and connect switch
+switch:
+    - platform: gpio
+      pin: 18
+      id: rLED
+
+#set gpio as binary input
+#LED turn on when start button is pressed, turn it off when stop button is pressed
+binary_sensor:
+    - platform: gpio
+      pin:
+        number: 25
+        mode: input_pullup
+        inverted: true
+      id: start
+      on_press:
+        then:
+            - switch.turn_on: rLED
+    - platform: gpio
+      pin:
+        number: 26
+        mode: input_pullup
+        inverted: true
+      id: stop
+      on_press: 
+        then:
+            - switch.turn_off: rLED
+     
+      
