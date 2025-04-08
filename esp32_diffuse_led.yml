@@ -1,0 +1,24 @@
+esphome:
+    platform: ESP32
+    board:  esp32dev
+    name: esp32-diffuse-led
+
+logger:
+
+switch:
+    - platform: gpio
+      pin: 19
+      id: ledBlue
+
+binary_sensor:
+    - platform: gpio
+      pin: 
+        number: 13
+        inverted: true
+      id: diffuseSensor
+      on_press:
+        then:
+            - switch.turn_on: ledBlue
+      on_release:
+        then:
+            - switch.turn_off: ledBlue
