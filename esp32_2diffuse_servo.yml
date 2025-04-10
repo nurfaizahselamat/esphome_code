@@ -1,0 +1,42 @@
+esphome:
+    platform: ESP32
+    board: esp32dev
+    name: esp32-2diffuse-servo
+    
+logger:
+
+#Servo configuration entry
+servo:
+    - id: my_servo
+      output: pwm_output
+      
+# Example output platform
+# On ESP32, use ledc output
+output:
+    - platform: ledc
+      id: pwm_output
+      pin: 5
+      frequency: 50 Hz #must be 50Hz
+      
+#Diffuse Sensor
+- platform: gpio
+      pin: 35
+      id: diffuseSensor2
+      on_release:
+        then:          
+            lambda: !lambda |-
+                id(my_servo).write(-1);      
+
+binary_sensor:
+    - platform: gpio
+      pin: 13
+      id: diffuseSensor1
+      on_press:
+        then:
+            lambda: !lambda |-
+                id(my_servo).write(0);
+                
+     
+
+
+      
