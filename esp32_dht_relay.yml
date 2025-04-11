@@ -1,0 +1,38 @@
+esphome:
+    platform: ESP32
+    board: esp32dev
+    name: esp32-dht22-relay
+
+logger:
+    level: DEBUG
+ 
+switch:
+    - platform: gpio
+      pin: 
+        number: 16 
+        inverted: true
+      name: "Ceiling Fan"
+      id: relay1
+     
+sensor:
+    - platform: dht
+      pin: 25
+      model: DHT22
+      
+      temperature:
+        name: "Temperature"
+        id: temp
+        on_value_range:
+            - above: 27.0            
+              then:
+                - switch.turn_on: relay1
+            - below: 25.0
+              then:
+                - switch.turn_off: relay1  
+      update_interval: 2s
+        
+
+        
+      
+
+  
