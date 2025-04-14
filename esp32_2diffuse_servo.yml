@@ -18,8 +18,9 @@ output:
       pin: 5
       frequency: 50 Hz #must be 50Hz
       
+binary_sensor:
 #Diffuse Sensor
-- platform: gpio
+    - platform: gpio
       pin: 35
       id: diffuseSensor2
       on_release:
@@ -27,7 +28,6 @@ output:
             lambda: !lambda |-
                 id(my_servo).write(-1);      
 
-binary_sensor:
     - platform: gpio
       pin: 13
       id: diffuseSensor1
@@ -35,6 +35,7 @@ binary_sensor:
         then:
             lambda: !lambda |-
                 id(my_servo).write(0);
+                
                 
      
 
