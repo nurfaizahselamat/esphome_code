@@ -1,7 +1,7 @@
 esphome:
     platform: ESP32
     board: esp32dev
-    name: esp32-buzzer
+    name: esp32-gassensor-buzzer
     
 # Enable logging
 logger: 
