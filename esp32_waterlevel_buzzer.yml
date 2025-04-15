@@ -1,0 +1,53 @@
+esphome:
+    platform: ESP32
+    board: esp32dev
+    name: esp32-waterlevel-buzzer
+    
+# Enable logging
+logger: 
+
+#Define sensors
+sensor:
+    - platform: adc
+      pin: 13
+      name: "Water level sensor"
+      id: wls
+      update_interval: 1s
+      filters:
+        - multiply: 100
+      unit_of_measurement: "%"
+      icon: "mdi:percent"
+    
+#Speaker output
+output:
+    - platform: ledc
+      pin: 25
+      id: buzzer_output
+
+rtttl:
+    output: buzzer_output
+
+interval:                
+    - interval: 2s                                                            
+      then:    
+        if:                                                                               
+            condition:
+                and:
+                - switch.is_on: buzzerswitch
+                - sensor.in_range:                                                              
+                    id: wls
+                    above: 100                                                            
+            then:                                                                           
+                - rtttl.play: 'siren:d=16,o=6,b=800:b'
+
+switch: 
+    - platform: gpio
+      pin: 2 #choose a free pin here, just to make ESPHome happy. we do not need it for anything
+      name: "Buzzer"
+      id: buzzerswitch
+      restore_mode: ALWAYS_ON
+      
+
+      
+    
+   
