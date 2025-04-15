@@ -1,0 +1,51 @@
+esphome:
+    platform: ESP32
+    board: esp32dev
+    name: esp32-ultrasonic-buzzer
+    
+# Enable logging
+logger: 
+
+sensor:
+  # HC-SR04
+  - platform: ultrasonic
+    id: ezig_ultrasonic
+    trigger_pin: 26
+    echo_pin: 27
+    name: "E-Zig ESP8266 Ultrasonic Sensor"
+    update_interval: 5s
+    timeout: 4.0m
+    
+#Speaker output
+output:
+    - platform: ledc
+      pin: 25
+      id: buzzer_output
+
+rtttl:
+    output: buzzer_output
+
+interval:                
+    - interval: 2s                                                            
+      then:    
+        if:                                                                               
+            condition:
+                and:
+                - switch.is_on: buzzerswitch
+                - sensor.in_range:                                                              
+                    id: ezig_ultrasonic
+                    below: 0.05                                                            
+            then:                                                                           
+                - rtttl.play: 'siren:d=16,o=6,b=800:b'
+
+switch: 
+    - platform: gpio
+      pin: 2 #choose a free pin here, just to make ESPHome happy. we do not need it for anything
+      name: "Buzzer"
+      id: buzzerswitch
+      restore_mode: ALWAYS_ON
+      
+
+      
+    
+   
