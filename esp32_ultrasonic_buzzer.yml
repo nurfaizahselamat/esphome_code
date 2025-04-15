@@ -9,10 +9,10 @@ logger:
 sensor:
   # HC-SR04
   - platform: ultrasonic
-    id: ezig_ultrasonic
+    id: nfs_ultrasonic
     trigger_pin: 26
     echo_pin: 27
-    name: "E-Zig ESP8266 Ultrasonic Sensor"
+    name: "NFS ESPHome Ultrasonic Sensor"
     update_interval: 5s
     timeout: 4.0m
     
@@ -33,7 +33,7 @@ interval:
                 and:
                 - switch.is_on: buzzerswitch
                 - sensor.in_range:                                                              
-                    id: ezig_ultrasonic
+                    id: nfs_ultrasonic
                     below: 0.05                                                            
             then:                                                                           
                 - rtttl.play: 'siren:d=16,o=6,b=800:b'
