@@ -1,0 +1,53 @@
+esphome:
+    platform: ESP32
+    board: esp32dev
+    name: esp32-ultrasonic-servo
+    
+# Enable logging
+logger: 
+
+sensor:
+  # HC-SR04
+    - platform: ultrasonic
+      id: nfs_ultrasonic
+      trigger_pin: 26
+      echo_pin: 27
+      name: "NFS ESPHome Ultrasonic Sensor"
+      update_interval: 5s
+      timeout: 4.0m
+   
+interval:                
+    - interval: 2s                                                            
+      then:    
+        if:                                                                               
+            condition:
+                and:
+                - sensor.in_range:                                                              
+                    id: nfs_ultrasonic
+                    below: 0.050                                             
+            then:                                                                              
+                - servo.write:
+                    id: my_servo
+                    level: 100%      
+            else:
+                - servo.write:
+                    id: my_servo
+                    level: -100%
+                                               
+#Servo component configuration entry
+servo:
+    - id: my_servo
+      output: pwm_output
+      
+# On ESP32, use ledc output platform
+output:
+    - platform: ledc
+      id: pwm_output
+      pin: 5
+      frequency: 50 Hz  
+   
+
+
+      
+    
+   
