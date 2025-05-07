@@ -1,0 +1,28 @@
+esphome:
+    platform: ESP32
+    board:  esp32dev
+    name: esp32-motionsensor-relay
+
+logger:
+
+switch:
+    - platform: gpio
+      pin: 18
+      inverted: true
+      id: relay
+
+binary_sensor:
+    - platform: gpio
+      pin: 25  
+    
+      name: "PIR Sensor"
+      device_class: motion
+      
+      on_press:
+        then:
+            - switch.turn_on: relay
+      on_release:
+        then:
+            - switch.turn_off: relay
+    
+      
