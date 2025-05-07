@@ -1,0 +1,43 @@
+esphome:
+    platform: ESP32
+    board: esp32dev
+    name: esp32-ds18b20-relay
+    
+logger:
+    level: DEBUG
+ 
+switch:
+    - platform: gpio
+      pin:  
+        number: 18 
+        inverted: true
+      name: "Ceiling Fan"
+      id: relay1
+     
+# Example configuration entry
+sensor:
+    - platform: dallas_temp
+      name: temperature
+      update_interval: 5s
+      
+      on_value_range:
+        - above: 28.0            
+          then:
+            - switch.turn_on: relay1
+        - below: 27.5
+          then:
+            - switch.turn_off: relay1  
+
+# Example configuration entry
+one_wire:
+    - platform: gpio
+      pin: 25
+
+
+
+        
+
+        
+      
+
+  
