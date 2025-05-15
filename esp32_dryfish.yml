@@ -1,0 +1,105 @@
+esphome:
+    platform: ESP32
+    board: esp32dev
+    name: esp32-dryfish
+    
+logger:
+    level: DEBUG
+
+# Control green & red pilot light
+switch:
+    - platform: gpio
+      pin: 21
+      inverted: true
+      id: relay1
+     
+# Control DC motor for conveyor
+    - platform: gpio
+      pin: 5
+      inverted: true
+      id: relay2
+      name: "Motor"
+      
+# Control heater
+    - platform: gpio
+      pin: 22
+      inverted: true
+      id: relay3   
+      name: "Heater"     
+
+# Control fan
+    - platform: gpio
+      pin: 4
+      inverted: true
+      id: relay4   
+      name: "Fan"      
+              
+# Input control light, DC motor 
+binary_sensor:
+    - platform: gpio
+      pin:
+        number: 13
+        mode: input_pullup
+        inverted: true
+      id: start
+      on_press:
+        then:
+            - switch.turn_on: relay1
+            - switch.turn_on: relay2
+            - switch.turn_on: relay3
+            - switch.turn_on: relay4
+            
+    - platform: gpio
+      pin:
+        number: 14
+        mode: input_pullup
+        inverted: true
+      id: stop
+      on_press:
+        then:
+            - switch.turn_off: relay1
+            - switch.turn_off: relay2
+            - switch.turn_off: relay3
+            - switch.turn_off: relay4
+            
+# Diffuse cutoff motor 
+    - platform: gpio
+      pin: 
+        number: 32
+        inverted: true
+      id: diffuseSensor
+      on_press:
+        then:
+            - switch.turn_off: relay2
+interval:
+    - interval: 30s
+      then:
+            - switch.turn_on: relay2  
+      
+# Temperature Sensor control heater and motor
+sensor:
+    - platform: dallas_temp
+      name: temperature
+      update_interval: 2s
+      
+      on_value_range: 
+      - above: 28.0            
+        then:
+            - switch.turn_off: relay3            
+            
+# Example configuration entry temperature sensor
+one_wire:
+    - platform: gpio
+      pin: 25
+
+
+      
+      
+      
+      
+      
+
+
+            
+            
+
