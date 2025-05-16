@@ -1,0 +1,44 @@
+esphome:
+    platform: ESP32
+    board: esp32dev
+    name: esp32-probe-temp-ds18b20
+logger:
+    level: DEBUG
+
+# Control green & red pilot light
+switch:
+    - platform: gpio
+      pin: 19   
+      inverted: true
+      id: relay
+      
+# Temperature Sensor control heater and motor
+sensor:
+    - platform: dallas_temp
+      name: temperature
+      update_interval: 5s
+      filters:
+#        - filter_out: nan
+#        - filter_out: 85.0
+       
+      on_value_range: 
+      - above: 28.0            
+        then:
+            - switch.turn_on: relay            
+            
+# Example configuration entry temperature sensor
+one_wire:
+    - platform: gpio
+      pin: 25
+
+
+      
+      
+      
+      
+      
+
+
+            
+            
+
