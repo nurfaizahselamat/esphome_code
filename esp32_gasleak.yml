@@ -1,0 +1,123 @@
+  n esphome:
+    name: esp32-gasleak
+  
+esp32:  
+    board: esp32dev
+
+# Enable logging    
+logger:
+
+# Control green & red pilot light
+switch:
+    - platform: gpio
+      pin: 21
+      inverted: true
+      id: relay1
+      name: "Green-Red-Light"
+
+# Control fan
+    - platform: gpio
+      pin: 23
+      inverted: true
+      id: relay2
+      name: "Fan"   
+      
+# Control valve
+    - platform: gpio
+      pin: 22
+      inverted: true
+      id: relay3   
+      name: "Valve" 
+  
+    - platform: gpio
+      pin: 2 #choose a free pin here, just to make ESPHome happy. we do not need it for anything
+      name: "Buzzer"
+      id: buzzerswitch
+      restore_mode: ALWAYS_ON  
+
+# Input control light, fan, valve
+binary_sensor:
+    - platform: gpio
+      pin:
+        number: 15
+        mode: input_pullup
+        inverted: true
+      id: start
+      on_press:
+        then:
+            - switch.turn_on: relay1
+            
+    - platform: gpio
+      pin:
+        number: 14
+        mode: input_pullup
+        inverted: true
+      id: stop
+      on_press:
+        then:
+            - switch.turn_off: relay1
+            
+#Define gas sensors
+sensor:
+    - platform: adc
+      pin: 13
+      name: "Smoke sensor"
+      id: smk
+      update_interval: 1s
+      filters:
+        - multiply: 100
+      unit_of_measurement: "%"
+      icon: "mdi:percent"
+    
+#Speaker output
+output:
+    - platform: ledc
+      pin: 25
+      id: buzzer_output
+      
+# On ESP32, servo use ledc output
+    - platform: ledc
+      id: pwm_output
+      pin: 5
+      frequency: 50 Hz     
+
+rtttl:
+    output: buzzer_output
+
+interval:                
+    - interval: 2s                                                            
+      then:    
+        if:                                                                               
+            condition:
+                and:
+                - switch.is_on: buzzerswitch
+                - sensor.in_range:                                                              
+                    id: smk
+                    above: 40 
+       
+            then:                                                                           
+                - rtttl.play: 'siren:d=16,o=6,b=800:b'
+                - servo.write:
+                    id: my_servo
+                    level: 100%    
+                - switch.turn_on: relay2
+                - switch.turn_off: relay3 
+                
+            else:
+                - servo.write:
+                    id: my_servo
+                    level: -100%    
+                - switch.turn_off: relay2
+                - switch.turn_on: relay3    
+                
+#Servo component configuration entry
+servo:
+    - id: my_servo
+      output: pwm_output
+      
+
+
+
+            
+            
+
