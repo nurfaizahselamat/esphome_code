@@ -1,0 +1,65 @@
+esphome:
+    name: esp32-reedswitch
+  
+esp32:  
+    board: esp32dev
+    
+logger:
+    level: DEBUG
+   
+# Control solenoid extend
+switch:
+    - platform: gpio
+      pin: 18
+      inverted: true
+      id: relay3  
+      name: "Sol A"    
+      
+# Control solenoid retract
+    - platform: gpio
+      pin: 19
+      inverted: true
+      id: relay4   
+      name: "Sol B"          
+                     
+# Reed Switch Cylinder extend
+binary_sensor:
+    - platform: gpio
+      pin: 
+        number: 25
+      id: reedSwitch1
+      
+      on_press:
+        then:
+            - switch.turn_on: relay3
+      
+      on_release:
+        then:
+            - switch.turn_off: relay3
+                                 
+# Reed Switch Cylinder retract
+    - platform: gpio
+      pin: 
+        number: 26
+      id: reedSwitch2
+      
+      on_press:
+        then:
+            - switch.turn_on: relay4
+
+      on_release:
+        then:
+            - switch.turn_off: relay4
+            
+            
+                          
+
+
+            
+
+
+
+
+
+            
+
