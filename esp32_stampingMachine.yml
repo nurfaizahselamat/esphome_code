@@ -1,0 +1,134 @@
+esphome:
+    name: esp32-stamping_machine
+  
+esp32:  
+    board: esp32dev
+    
+logger:
+    level: DEBUG
+   
+# Control green & red pilot light
+switch:
+    - platform: gpio
+      pin: 16
+      inverted: true
+      id: relay1
+      
+# Control DC motor for conveyor
+    - platform: gpio
+      pin: 17
+      inverted: true
+      id: relay2
+      name: "Motor"   
+
+# Control solenoid extend
+    - platform: gpio
+      pin: 18
+      inverted: true
+      id: relay3   
+      name: "Sol A"    
+      
+# Control solenoid retract
+    - platform: gpio
+      pin: 19
+      inverted: true
+      id: relay4   
+      name: "Sol B"            
+                              
+# Input control light, DC motor 
+binary_sensor:
+    - platform: gpio
+      pin:
+        number: 22
+        mode: input_pullup
+        inverted: true
+      id: start
+      on_press:
+        then:
+            - switch.turn_on: relay1
+          
+    - platform: gpio
+      pin:
+        number: 23
+        mode: input_pullup
+        inverted: true
+      id: stop
+      on_press:
+        then:
+            - switch.turn_off: relay1
+            - switch.turn_off: relay2
+            - switch.turn_off: relay3
+            - switch.turn_off: relay4
+            
+# Diffuse on motor 
+    - platform: gpio
+      pin: 
+        number: 15
+        inverted: true
+      id: diffuseSensor1
+      on_press:
+        - if:
+            condition:
+                lambda: |- 
+                    return id(relay1).state == true;       
+    
+            then:
+                - switch.turn_on: relay2
+            
+      on_release:
+        then:
+            - switch.turn_on: relay2
+            
+# Diffuse cutoff motor 
+    - platform: gpio
+      pin: 
+        number: 5
+        inverted: true
+      id: diffuseSensor2
+      on_press:
+        - if:
+            condition:
+                lambda: |- 
+                    return id(reedSwitch1).state == true; 
+            then:
+                - switch.turn_off: relay2
+                - switch.turn_on: relay3
+                                                        
+# Reed Switch Cylinder extend
+    - platform: gpio
+      pin: 
+        number: 25
+      id: reedSwitch1
+      on_press:
+        - if:
+            condition:
+                lambda: |- 
+                    return id(diffuseSensor2).state == true; 
+                    
+            then:
+                - switch.turn_on: relay3
+                
+      on_release:
+        then:
+            - switch.turn_off: relay3
+                                 
+# Reed Switch Cylinder retract
+    - platform: gpio
+      pin: 
+        number: 26
+      id: reedSwitch2     
+      on_press:
+        then:
+            - switch.turn_on: relay4
+           
+      on_release:
+        then:
+            - switch.turn_off: relay4
+            - delay: 5s
+            - switch.turn_on: relay2
+              
+          
+
+
+                                 
+
