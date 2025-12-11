@@ -94,7 +94,7 @@ binary_sensor:
                 - switch.turn_off: relay2
                 - switch.turn_on: relay3
                                                         
-# Reed Switch Cylinder extend
+# Reed Switch Cylinder extend , Reed Switch 1 (Extend) – Work only if cycle_done == false
     - platform: gpio
       pin: 
         number: 25
@@ -140,4 +140,5 @@ globals:
 
 
                                  
+
 
