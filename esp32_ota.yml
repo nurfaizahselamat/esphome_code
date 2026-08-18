@@ -1,0 +1,19 @@
+esphome:
+  name: tomato-sorter
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+wifi:
+  ssid: "YOUR_WIFI_NAME"
+  password: "YOUR_WIFI_PASSWORD"
+
+logger:
+
+api:
+
+ota:
+  - platform: esphome
+    password: "MyStrongOTAPassword"
